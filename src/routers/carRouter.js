@@ -6,7 +6,7 @@ const {
   makeCarPrimary,
   deleteCar,
 } = require("../controllers/carController");
-const auth = require("../middleware/userAuth");
+const auth = require("../middleware/auth");
 
 // Add New Car
 router.post("/user/cars", auth, addCar);

@@ -8,17 +8,16 @@ const {
 } = require("../controllers/bookingController");
 const router = new express.Router();
 
-const userAuth = require("../middleware/userAuth");
-const ownerAuth = require("../middleware/ownerAuth");
+const auth = require("../middleware/auth");
 
 // New booking
-router.post("/bookings", userAuth, createBooking);
+router.post("/bookings", auth, createBooking);
 
 // Delete booking
-router.delete("/bookings/:bookingId", userAuth, deleteBooking);
+router.delete("/bookings/:bookingId", auth, deleteBooking);
 
 // Get all bookings of user
-router.get("/bookings/me", userAuth, userBookings);
+router.get("/bookings/me", auth, userBookings);
 
 //Get all bookings of parking
 router.get("/bookings/:parkingId", parkingBookings);

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = new express.Router();
 
-const Auth = require("../middleware/ownerAuth");
+const auth = require("../middleware/auth");
 
 const {
   createParking,
@@ -11,7 +11,7 @@ const {
 } = require("../controllers/parkingController");
 
 // Create Parking
-router.post("/owners/parkings", Auth, createParking);
+router.post("/owners/parkings", auth, createParking);
 
 // Read All Parkings
 //GET /parkings?limit=10&skip=0
@@ -21,6 +21,6 @@ router.get("/parkings", readAllParkings);
 router.get("/parkings/:parking_id", readParking);
 
 // Delete Parking
-router.delete("/parkings/:parking_id", Auth, deleteParking);
+router.delete("/parkings/:parking_id", auth, deleteParking);
 
 module.exports = router;

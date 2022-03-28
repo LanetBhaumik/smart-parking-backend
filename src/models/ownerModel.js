@@ -60,7 +60,10 @@ const ownerSchema = new mongoose.Schema(
 
 ownerSchema.methods.generateAuthToken = async function () {
   const owner = this;
-  const token = jwt.sign({ _id: owner._id.toString() }, process.env.JWT_SECRET);
+  const token = jwt.sign(
+    { _id: owner._id.toString(), role: "owner" },
+    process.env.JWT_SECRET
+  );
   await owner.save();
   return token;
 };

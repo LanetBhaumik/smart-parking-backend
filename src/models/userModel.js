@@ -63,13 +63,16 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-userSchema.methods.generateAuthToken = async function() {
+userSchema.methods.generateAuthToken = async function () {
   const user = this;
-  const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
+  const token = jwt.sign(
+    { _id: user._id.toString(), role: "user" },
+    process.env.JWT_SECRET
+  );
   return token;
 };
 
-userSchema.methods.toJSON = function() {
+userSchema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();
   delete userObject.password;
@@ -100,7 +103,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
 };
 
 //Hash the plain text password before saving
-userSchema.pre("save", async function(next) {
+userSchema.pre("save", async function (next) {
   const user = this; //'this' is a document that is going to be save.
 
   if (user.isModified("password")) {
@@ -110,7 +113,7 @@ userSchema.pre("save", async function(next) {
   next(); // it runs after function runs
 });
 
-userSchema.pre("remove", async function(next) {
+userSchema.pre("remove", async function (next) {
   const user = this;
   await Car.deleteMany({
     owner: user._id,
