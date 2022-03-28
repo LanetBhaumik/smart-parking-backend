@@ -23,4 +23,8 @@ app.use(ownerRouter);
 app.use(parkingRouter);
 app.use(bookingRouter);
 
+app.get("*", (req, res) => {
+  res.send("route does not exists");
+});
+
 module.exports = app;
