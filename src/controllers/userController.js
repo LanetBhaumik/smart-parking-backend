@@ -1,12 +1,9 @@
+const mongoose = require("mongoose");
 const User = require("../models/userModel");
 const sharp = require("sharp");
 const multer = require("multer");
 const Car = require("../models/carModel");
-const { default: mongoose } = require("mongoose");
 // const { sendWelcomeEmail, sendCancelationEmail } = require("../emails/account");
-// import { v1 as uuidv1 } from "uuid";
-
-// uuidv1();
 
 const createUser = async (req, res) => {
   try {

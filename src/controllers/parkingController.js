@@ -1,5 +1,5 @@
-const Parking = require("../models/parkingModel");
 const mongoose = require("mongoose");
+const Parking = require("../models/parkingModel");
 const ParkingBooking = require("../models/parkingBookingModal");
 
 const createParking = async (req, res) => {

@@ -1,7 +1,6 @@
-const { default: mongoose } = require("mongoose");
+const mongoose = require("mongoose");
 const Booking = require("../models/bookingModel");
 const ParkingBooking = require("../models/parkingBookingModal");
-const Parking = require("../models/parkingModel");
 
 const endOfDay = require("date-fns/endOfDay");
 const startOfDay = require("date-fns/startOfDay");

@@ -1,7 +1,7 @@
+const mongoose = require("mongoose");
 const multer = require("multer");
 const Owner = require("../models/ownerModel");
 const Parking = require("../models/parkingModel");
-const mongoose = require("mongoose");
 const ParkingBooking = require("../models/parkingBookingModal");
 
 const createOwner = async (req, res) => {
