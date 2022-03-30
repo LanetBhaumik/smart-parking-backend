@@ -28,7 +28,7 @@ const addCar = async (req, res) => {
       select: "car_no",
     });
     res.status(201).send({
-      cars: req.user.cars,
+      user: req.user,
     });
   } catch (error) {
     console.log(error);
@@ -45,7 +45,9 @@ const makeCarPrimary = async (req, res) => {
     req.user.car = req.params.car_id;
     await req.user.save();
     res.send({
-      success: `successfully set primary car`,
+      status: "success",
+      message: `successfully set primary car`,
+      user: req.user,
     });
   } catch (error) {
     console.log(error);
@@ -73,8 +75,9 @@ const deleteCar = async (req, res) => {
     await req.user.save();
     await car.remove();
     res.send({
-      success: `car is deleted successfully`,
-      updatedCars,
+      status: "success",
+      message: `car is deleted successfully`,
+      user: req.user,
     });
   } catch (error) {
     console.log(error);

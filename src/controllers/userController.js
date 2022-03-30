@@ -129,7 +129,7 @@ const upload = multer({
 
 const uploadAvatar = async (req, res) => {
   const buffer = await sharp(req.file.buffer)
-    .resize({ width: 250, height: 250 })
+    .resize({ width: 256, height: 256 })
     .png()
     .toBuffer();
   req.user.avatar = buffer;
