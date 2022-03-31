@@ -55,6 +55,15 @@ const createUser = async (req, res) => {
         error: `This ${keys[0]} is already being used`,
       });
     }
+    if (error instanceof mongoose.Error.ValidationError) {
+      const customErrors = {};
+      for (field in error.errors) {
+        customErrors[field] = error.errors[field].message;
+      }
+      return res.status(400).send({
+        error: customErrors,
+      });
+    }
     res.status(400).send({
       error: error.message,
     });

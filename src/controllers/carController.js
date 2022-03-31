@@ -40,7 +40,10 @@ const addCar = async (req, res) => {
 
 const makeCarPrimary = async (req, res) => {
   try {
-    const car = req.user.cars.find((car) => car == req.params.car_id);
+    const car = req.user.cars.find((car) => {
+      console.log(req.params.car_id, car._id);
+      return car._id == req.params.car_id; // == for object id format and number format comparision
+    });
     if (!car) throw new Error("car not found");
     req.user.car = req.params.car_id;
     await req.user.save();
@@ -63,12 +66,12 @@ const deleteCar = async (req, res) => {
     if (!car) throw new Error("car not found");
 
     if (req.user.cars.length === 1)
-      throw new Error("Atleast One car is required.");
+      throw new Error("You can not delete. Atleast One car is required.");
 
     const updatedCars = req.user.cars.filter((car) => {
-      return car != req.params.car_id;
+      return car._id != req.params.car_id;
     });
-    if (req.params.car_id == req.user.car) {
+    if (req.params.car_id == req.user.car._id) {
       req.user.car = updatedCars[0];
     }
     req.user.cars = updatedCars;

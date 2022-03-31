@@ -15,6 +15,6 @@ router.post("/user/cars", auth, addCar);
 router.post("/user/primary_car/:car_id", auth, makeCarPrimary);
 
 // Delete Car
-router.delete("/user/delete_car/:car_id", auth, deleteCar);
+router.delete("/user/cars/:car_id", auth, deleteCar);
 
 module.exports = router;
