@@ -1,8 +1,9 @@
 const express = require("express");
 const {
   createBooking,
-  userBookings,
   deleteBooking,
+  userBookings,
+  carBookings,
   parkingBookings,
   parkingSlotBookings,
 } = require("../controllers/bookingController");
@@ -17,12 +18,15 @@ router.post("/bookings", auth, createBooking);
 router.delete("/bookings/:bookingId", auth, deleteBooking);
 
 // Get all bookings of user
-router.get("/bookings/me", auth, userBookings);
+router.get("/bookings/user/me", auth, userBookings);
+
+// Get all bookings of car
+router.get("/bookings/car/:carId", auth, carBookings);
 
 //Get all bookings of parking
-router.get("/bookings/:parkingId", parkingBookings);
+router.get("/bookings/parking/:parkingId", parkingBookings);
 
 //Get all bookings of parking slot
-router.get("/bookings/:parkingId/:slot", parkingSlotBookings);
+router.get("/bookings/parking/:parkingId/:slot", parkingSlotBookings);
 
 module.exports = router;

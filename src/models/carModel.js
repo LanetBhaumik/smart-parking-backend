@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Booking = require("./bookingModel");
 const carSchema = new mongoose.Schema({
   car_no: {
     type: String,
@@ -18,6 +19,14 @@ const carSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+});
+
+carSchema.pre("remove", async function (next) {
+  const car = this;
+  await Booking.deleteMany({
+    car: car._id,
+  });
+  next();
 });
 
 const Car = mongoose.model("Car", carSchema);

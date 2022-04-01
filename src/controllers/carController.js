@@ -41,12 +41,15 @@ const addCar = async (req, res) => {
 const makeCarPrimary = async (req, res) => {
   try {
     const car = req.user.cars.find((car) => {
-      console.log(req.params.car_id, car._id);
       return car._id == req.params.car_id; // == for object id format and number format comparision
     });
     if (!car) throw new Error("car not found");
     req.user.car = req.params.car_id;
     await req.user.save();
+    await req.user.populate({
+      path: "car",
+      select: "car_no",
+    });
     res.send({
       status: "success",
       message: `successfully set primary car`,

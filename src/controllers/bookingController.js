@@ -25,21 +25,21 @@ const createBooking = async (req, res) => {
     });
 
     //logic of time is occupied or not
-    const requestedIn = new Date(req.body.in_time).getTime();
-    const requestedOut = new Date(req.body.out_time).getTime();
-    const occupied = parkingBooking.bookings.some((booking) => {
-      const bookedIn = new Date(booking.in_time).getTime();
-      const bookedOut = new Date(booking.out_time).getTime();
-      return (
-        (bookedIn <= requestedIn && requestedIn < bookedOut) ||
-        (bookedIn < requestedOut && requestedOut <= bookedOut)
-      );
-    });
-    if (occupied) {
-      return res.status(409).send({
-        error: "this time is already booked on this slot.",
-      });
-    }
+    // const requestedIn = new Date(req.body.in_time).getTime();
+    // const requestedOut = new Date(req.body.out_time).getTime();
+    // const occupied = parkingBooking.bookings.some((booking) => {
+    //   const bookedIn = new Date(booking.in_time).getTime();
+    //   const bookedOut = new Date(booking.out_time).getTime();
+    //   return (
+    //     (bookedIn <= requestedIn && requestedIn < bookedOut) ||
+    //     (bookedIn < requestedOut && requestedOut <= bookedOut)
+    //   );
+    // });
+    // if (occupied) {
+    //   return res.status(409).send({
+    //     error: "This time is already booked on this slot.",
+    //   });
+    // }
 
     const booking = new Booking({
       _id: bookingId,
@@ -116,6 +116,32 @@ const userBookings = async (req, res) => {
       });
     const totalResults = await Booking.find({
       user: req.user._id,
+    }).count();
+    res.send({ bookings, totalResults });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      error: error.message,
+    });
+  }
+};
+
+// Get all bookings of car
+const carBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find({
+      car: req.params.carId,
+    })
+      .limit(parseInt(req.query.limit))
+      .skip(parseInt(req.query.skip))
+      .select("-car -user")
+      .sort({ in_time: -1 })
+      .populate({
+        path: "parking",
+        select: "parking_name",
+      });
+    const totalResults = await Booking.find({
+      car: req.params.carId,
     }).count();
     res.send({ bookings, totalResults });
   } catch (error) {
@@ -210,8 +236,9 @@ const parkingSlotBookings = async (req, res) => {
 
 module.exports = {
   createBooking,
-  userBookings,
-  parkingBookings,
   deleteBooking,
+  userBookings,
+  carBookings,
+  parkingBookings,
   parkingSlotBookings,
 };

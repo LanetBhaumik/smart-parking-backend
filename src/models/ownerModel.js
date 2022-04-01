@@ -81,11 +81,11 @@ ownerSchema.methods.toJSON = function () {
 ownerSchema.statics.findByCredentials = async (email, password) => {
   const owner = await Owner.findOne({ email });
   if (!owner) {
-    throw new Error("Unable to login");
+    throw new Error("Invalid Credentials");
   }
   const isMatch = await bcrypt.compare(password, owner.password);
   if (!isMatch) {
-    throw new Error("Unable to login");
+    throw new Error("Invalid Credentials");
   }
   return owner;
 };
