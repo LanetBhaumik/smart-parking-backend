@@ -24,22 +24,22 @@ const createBooking = async (req, res) => {
       return bookedOut >= currentTime;
     });
 
-    //logic of time is occupied or not
-    // const requestedIn = new Date(req.body.in_time).getTime();
-    // const requestedOut = new Date(req.body.out_time).getTime();
-    // const occupied = parkingBooking.bookings.some((booking) => {
-    //   const bookedIn = new Date(booking.in_time).getTime();
-    //   const bookedOut = new Date(booking.out_time).getTime();
-    //   return (
-    //     (bookedIn <= requestedIn && requestedIn < bookedOut) ||
-    //     (bookedIn < requestedOut && requestedOut <= bookedOut)
-    //   );
-    // });
-    // if (occupied) {
-    //   return res.status(409).send({
-    //     error: "This time is already booked on this slot.",
-    //   });
-    // }
+    // logic of time is occupied or not
+    const requestedIn = new Date(req.body.in_time).getTime();
+    const requestedOut = new Date(req.body.out_time).getTime();
+    const occupied = parkingBooking.bookings.some((booking) => {
+      const bookedIn = new Date(booking.in_time).getTime();
+      const bookedOut = new Date(booking.out_time).getTime();
+      return (
+        (bookedIn <= requestedIn && requestedIn < bookedOut) ||
+        (bookedIn < requestedOut && requestedOut <= bookedOut)
+      );
+    });
+    if (occupied) {
+      return res.status(409).send({
+        error: "This time is already booked on this slot.",
+      });
+    }
 
     const booking = new Booking({
       _id: bookingId,
@@ -65,14 +65,14 @@ const createBooking = async (req, res) => {
 const deleteBooking = async (req, res) => {
   try {
     const booking = await Booking.findOne({
-      _id: req.params.booking_id,
+      _id: req.params.bookingId,
       user: req.user._id,
     });
     if (!booking) {
       throw new Error("Booking not found or you do not have permission.");
     }
 
-    const parkingBooking = await ParkingBooking.find({
+    const parkingBooking = await ParkingBooking.findOne({
       parking: booking.parking,
       slot: booking.slot,
     }).populate("bookings");
@@ -81,13 +81,17 @@ const deleteBooking = async (req, res) => {
     const currentTime = new Date().getTime();
     const newBookigs = parkingBooking.bookings.filter((bkng) => {
       const bookedOut = new Date(bkng.out_time).getTime();
-      return bookedOut >= currentTime || bkng._id !== booking._id;
+      return bookedOut >= currentTime || bkng._id != booking._id; // != for string and object Id comparision
     });
     parkingBooking.bookings = newBookigs;
     await parkingBooking.save();
 
     await booking.remove();
-    res.send(booking);
+    res.send({
+      status: "success",
+      message: "booking deleted successfully",
+      deletedBooking: booking,
+    });
   } catch (error) {
     console.log(error);
     res.status(400).send({
