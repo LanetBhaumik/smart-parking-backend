@@ -7,40 +7,40 @@ const Car = require("../models/carModel");
 
 const createUser = async (req, res) => {
   try {
-    const user_id = new mongoose.Types.ObjectId();
-    const car_id = new mongoose.Types.ObjectId();
+    const userId = new mongoose.Types.ObjectId();
+    const carId = new mongoose.Types.ObjectId();
     if (!req.body.car || req.body.car == "") {
-      throw new Error(`you must add car_no to create profile`);
+      throw new Error(`you must add car number to create profile`);
     }
     const carExists = await Car.findOne({
-      car_no: req.body.car_no,
+      carNo: req.body.carNo,
     });
     if (carExists) throw new Error("Car already exists");
     const car = new Car({
-      _id: car_id,
-      car_no: req.body.car,
-      owner: user_id,
+      _id: carId,
+      carNo: req.body.car,
+      owner: userId,
     });
     await car.save();
 
     const user = new User({
-      _id: user_id,
+      _id: userId,
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
-      mobile_no: req.body.mobile_no,
-      car: car_id,
-      cars: [car_id],
+      mobileNo: req.body.mobileNo,
+      car: carId,
+      cars: [carId],
     });
     await user.save();
     // sendWelcomeEmail(user.email, user.name);
     await user.populate({
       path: "car",
-      select: "car_no",
+      select: "carNo",
     });
     await user.populate({
       path: "cars",
-      select: "car_no",
+      select: "carNo",
     });
     const token = await user.generateAuthToken();
     res.status(201).send({

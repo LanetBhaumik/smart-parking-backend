@@ -15,7 +15,7 @@ const createOwner = async (req, res) => {
       owner: ownerId,
     });
 
-    for (let i = 1; i <= req.body.parking.total_slots; i++) {
+    for (let i = 1; i <= req.body.parking.totalSlots; i++) {
       const parkingBooking = new ParkingBooking({
         parking: parkingId,
         slot: i,

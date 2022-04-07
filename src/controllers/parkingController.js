@@ -12,7 +12,7 @@ const createParking = async (req, res) => {
     });
     await parking.save();
 
-    for (let i = 1; i <= req.body.total_slots; i++) {
+    for (let i = 1; i <= req.body.totalSlots; i++) {
       const parkingBooking = new ParkingBooking({
         parking: parkingId,
         slot: i,
@@ -63,7 +63,7 @@ const readAllParkings = async (req, res) => {
 const readParking = async (req, res) => {
   try {
     const parking = await Parking.findOne({
-      _id: req.params.parking_id,
+      _id: req.params.parkingId,
     });
     if (!parking) {
       throw new Error("parking not found");
@@ -80,7 +80,7 @@ const readParking = async (req, res) => {
 const deleteParking = async (req, res) => {
   try {
     const parking = await Parking.findOne({
-      _id: req.params.parking_id,
+      _id: req.params.parkingId,
       owner: req.owner._id,
     });
     if (!parking) {

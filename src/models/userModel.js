@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
         }
       },
     },
-    mobile_no: {
+    mobileNo: {
       type: String,
       required: true,
       unique: true,
@@ -89,11 +89,11 @@ userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email })
     .populate({
       path: "cars",
-      select: "car_no",
+      select: "carNo",
     })
     .populate({
       path: "car",
-      select: "car_no",
+      select: "carNo",
     });
   if (!user) {
     throw new Error("User not found");

@@ -15,11 +15,11 @@ const auth = async (req, res, next) => {
       }
       await user.populate({
         path: "cars",
-        select: "car_no",
+        select: "carNo",
       });
       await user.populate({
         path: "car",
-        select: "car_no",
+        select: "carNo",
       });
       req.user = user;
     } else if (decoded.role === "owner") {

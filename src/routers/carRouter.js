@@ -12,9 +12,9 @@ const auth = require("../middleware/auth");
 router.post("/user/cars", auth, addCar);
 
 // Set Car As Primary
-router.post("/user/primary_car/:car_id", auth, makeCarPrimary);
+router.post("/user/primaryCar/:carId", auth, makeCarPrimary);
 
 // Delete Car
-router.delete("/user/cars/:car_id", auth, deleteCar);
+router.delete("/user/cars/:carId", auth, deleteCar);
 
 module.exports = router;

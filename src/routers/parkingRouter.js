@@ -18,9 +18,9 @@ router.post("/owners/parkings", auth, createParking);
 router.get("/parkings", readAllParkings);
 
 // Read Parking
-router.get("/parkings/:parking_id", readParking);
+router.get("/parkings/:parkingId", readParking);
 
 // Delete Parking
-router.delete("/parkings/:parking_id", auth, deleteParking);
+router.delete("/parkings/:parkingId", auth, deleteParking);
 
 module.exports = router;

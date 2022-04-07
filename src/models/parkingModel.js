@@ -4,12 +4,12 @@ const ParkingBooking = require("./parkingBookingModal");
 
 const parkingSchema = new mongoose.Schema(
   {
-    parking_name: {
+    parkingName: {
       type: String,
       required: true,
       trim: true,
     },
-    total_slots: {
+    totalSlots: {
       type: Number,
       required: true,
       default: 10,

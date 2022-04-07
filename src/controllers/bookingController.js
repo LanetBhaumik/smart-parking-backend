@@ -20,16 +20,16 @@ const createBooking = async (req, res) => {
     // logic of deleting expired bookings id from parkingBooking
     const currentTime = new Date().getTime();
     const newBookings = parkingBooking.bookings.filter((booking) => {
-      const bookedOut = new Date(booking.out_time).getTime();
+      const bookedOut = new Date(booking.outTime).getTime();
       return bookedOut >= currentTime;
     });
 
     // logic of time is occupied or not
-    const requestedIn = new Date(req.body.in_time).getTime();
-    const requestedOut = new Date(req.body.out_time).getTime();
+    const requestedIn = new Date(req.body.inTime).getTime();
+    const requestedOut = new Date(req.body.outTime).getTime();
     const occupied = parkingBooking.bookings.some((booking) => {
-      const bookedIn = new Date(booking.in_time).getTime();
-      const bookedOut = new Date(booking.out_time).getTime();
+      const bookedIn = new Date(booking.inTime).getTime();
+      const bookedOut = new Date(booking.outTime).getTime();
       return (
         (bookedIn <= requestedIn && requestedIn < bookedOut) ||
         (bookedIn < requestedOut && requestedOut <= bookedOut)
@@ -80,7 +80,7 @@ const deleteBooking = async (req, res) => {
     // logic of deleting booking and expired bookings id from parkingBooking
     const currentTime = new Date().getTime();
     const newBookigs = parkingBooking.bookings.filter((bkng) => {
-      const bookedOut = new Date(bkng.out_time).getTime();
+      const bookedOut = new Date(bkng.outTime).getTime();
       return bookedOut >= currentTime || bkng._id != booking._id; // != for string and object Id comparision
     });
     parkingBooking.bookings = newBookigs;
@@ -109,14 +109,14 @@ const userBookings = async (req, res) => {
       .limit(parseInt(req.query.limit))
       .skip(parseInt(req.query.skip))
       .select("-user")
-      .sort({ in_time: -1 })
+      .sort({ inTime: -1 })
       .populate({
         path: "car",
-        select: "car_no",
+        select: "carNo",
       })
       .populate({
         path: "parking",
-        select: "parking_name",
+        select: "parkingName",
       });
     const totalResults = await Booking.find({
       user: req.user._id,
@@ -139,10 +139,10 @@ const carBookings = async (req, res) => {
       .limit(parseInt(req.query.limit))
       .skip(parseInt(req.query.skip))
       .select("-car -user")
-      .sort({ in_time: -1 })
+      .sort({ inTime: -1 })
       .populate({
         path: "parking",
-        select: "parking_name",
+        select: "parkingName",
       });
     const totalResults = await Booking.find({
       car: req.params.carId,
@@ -166,10 +166,10 @@ const parkingBookings = async (req, res) => {
       .populate({
         path: "bookings",
         match: {
-          in_time: { $gte: startOfDay(new Date()), $lte: endOfDay(new Date()) },
+          inTime: { $gte: startOfDay(new Date()), $lte: endOfDay(new Date()) },
         },
-        select: "in_time out_time",
-        options: { sort: { in_time: 1 } },
+        select: "inTime outTime",
+        options: { sort: { inTime: 1 } },
       });
     if (parkingBookings.length == 0) {
       return res.status(404).send({
@@ -182,7 +182,7 @@ const parkingBookings = async (req, res) => {
       // logic of deleting expired bookings id from parkingBooking
       const currentTime = new Date().getTime();
       const newBookings = parkingBooking.bookings.filter((booking) => {
-        const bookedOut = new Date(booking.out_time).getTime();
+        const bookedOut = new Date(booking.outTime).getTime();
         return bookedOut >= currentTime;
       });
 
@@ -208,10 +208,10 @@ const parkingSlotBookings = async (req, res) => {
       slot: req.params.slot,
     }).populate({
       path: "bookings",
-      options: { sort: { in_time: 1 } },
+      options: { sort: { inTime: 1 } },
       populate: {
         path: "user car",
-        select: "name car_no -_id",
+        select: "name carNo -_id",
       },
       select: "-parking -slot -__v",
     });
@@ -223,7 +223,7 @@ const parkingSlotBookings = async (req, res) => {
     // logic of deleting expired bookings id from parkingBooking
     const currentTime = new Date().getTime();
     const newBookings = parkingBooking.bookings.filter((booking) => {
-      const bookedOut = new Date(booking.out_time).getTime();
+      const bookedOut = new Date(booking.outTime).getTime();
       return bookedOut >= currentTime;
     });
 

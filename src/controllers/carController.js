@@ -4,28 +4,28 @@ const Car = require("../models/carModel");
 
 const addCar = async (req, res) => {
   try {
-    const car_id = new mongoose.Types.ObjectId();
-    const car_no = req.body.car.toUpperCase();
+    const carId = new mongoose.Types.ObjectId();
+    const carNo = req.body.car.toUpperCase();
 
     const carExists = await Car.findOne({
-      car_no,
+      carNo,
     });
 
-    if (carExists) throw new Error(`${car_no} is already registered.`);
+    if (carExists) throw new Error(`${carNo} is already registered.`);
 
     const car = new Car({
-      _id: car_id,
-      car_no,
+      _id: carId,
+      carNo,
       owner: req.user._id,
     });
 
     await car.save();
-    const updatedCars = [...req.user.cars, car_id];
+    const updatedCars = [...req.user.cars, carId];
     req.user.cars = updatedCars;
     await req.user.save();
     await req.user.populate({
       path: "cars",
-      select: "car_no",
+      select: "carNo",
     });
     res.status(201).send({
       user: req.user,
@@ -41,14 +41,14 @@ const addCar = async (req, res) => {
 const makeCarPrimary = async (req, res) => {
   try {
     const car = req.user.cars.find((car) => {
-      return car._id == req.params.car_id; // == for object id format and number format comparision
+      return car._id == req.params.carId; // == for object id format and number format comparision
     });
     if (!car) throw new Error("car not found");
-    req.user.car = req.params.car_id;
+    req.user.car = req.params.carId;
     await req.user.save();
     await req.user.populate({
       path: "car",
-      select: "car_no",
+      select: "carNo",
     });
     res.send({
       status: "success",
@@ -65,16 +65,16 @@ const makeCarPrimary = async (req, res) => {
 
 const deleteCar = async (req, res) => {
   try {
-    const car = await Car.findById(req.params.car_id);
+    const car = await Car.findById(req.params.carId);
     if (!car) throw new Error("car not found");
 
     if (req.user.cars.length === 1)
       throw new Error("You can not delete. Atleast One car is required.");
 
     const updatedCars = req.user.cars.filter((car) => {
-      return car._id != req.params.car_id;
+      return car._id != req.params.carId;
     });
-    if (req.params.car_id == req.user.car._id) {
+    if (req.params.carId == req.user.car._id) {
       req.user.car = updatedCars[0];
     }
     req.user.cars = updatedCars;

@@ -6,11 +6,11 @@ const bookingSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  in_time: {
+  inTime: {
     type: Date,
     required: true,
   },
-  out_time: {
+  outTime: {
     type: Date,
     required: true,
   },

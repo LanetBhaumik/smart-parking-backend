@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Booking = require("./bookingModel");
 const carSchema = new mongoose.Schema({
-  car_no: {
+  carNo: {
     type: String,
     required: true,
     trim: true,
