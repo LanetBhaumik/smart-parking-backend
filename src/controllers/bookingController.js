@@ -24,7 +24,7 @@ const createBooking = async (req, res) => {
       return bookedOut >= currentTime;
     });
 
-    // logic of time is occupied or not
+    // logic of time is occupied or not on this slot
     const requestedIn = new Date(req.body.inTime).getTime();
     const requestedOut = new Date(req.body.outTime).getTime();
     const occupied = parkingBooking.bookings.some((booking) => {
@@ -38,6 +38,25 @@ const createBooking = async (req, res) => {
     if (occupied) {
       return res.status(409).send({
         error: "This time is already booked on this slot.",
+      });
+    }
+
+    // logic to see car is not parked during requested time
+    const carBookings = await Booking.find({
+      car: req.user.car,
+    });
+    const carParked = carBookings.some((booking) => {
+      const bookedIn = new Date(booking.inTime).getTime();
+      const bookedOut = new Date(booking.outTime).getTime();
+      return (
+        (bookedIn <= requestedIn && requestedIn < bookedOut) ||
+        (bookedIn < requestedOut && requestedOut <= bookedOut)
+      );
+    });
+    if (carParked) {
+      return res.status(409).send({
+        error:
+          "This car's parking space has already been reserved at this time.",
       });
     }
 
