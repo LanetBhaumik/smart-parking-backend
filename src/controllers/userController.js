@@ -3,7 +3,6 @@ const User = require("../models/userModel");
 const sharp = require("sharp");
 const multer = require("multer");
 const Car = require("../models/carModel");
-// const { sendWelcomeEmail, sendCancelationEmail } = require("../emails/account");
 
 const createUser = async (req, res) => {
   try {
@@ -33,7 +32,6 @@ const createUser = async (req, res) => {
       cars: [carId],
     });
     await user.save();
-    // sendWelcomeEmail(user.email, user.name);
     await user.populate({
       path: "car",
       select: "carNo",
@@ -115,53 +113,11 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     await req.user.remove();
-    // sendCancelationEmail(req.user.email, req.user.name);
     res.send(req.user);
   } catch (error) {
     res.status(500).send({
       error: error.message,
     });
-  }
-};
-
-const upload = multer({
-  fileFilter(req, file, cb) {
-    if (!file.originalname.match(/\.(jpg|jpef|png)$/)) {
-      return cb(new Error("Please upload an image"));
-    }
-    cb(undefined, true);
-  },
-  limits: {
-    fileSize: 1000000,
-  },
-});
-
-const uploadAvatar = async (req, res) => {
-  const buffer = await sharp(req.file.buffer)
-    .resize({ width: 256, height: 256 })
-    .png()
-    .toBuffer();
-  req.user.avatar = buffer;
-  await req.user.save();
-  res.send();
-};
-
-const deleteAvatar = async (req, res) => {
-  req.user.avatar = undefined;
-  await req.user.save();
-  res.send();
-};
-
-const getAvatar = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user || !user.avatar) {
-      throw new Error();
-    }
-    res.set("Content-Type", "image/png");
-    res.send(user.avatar);
-  } catch (error) {
-    res.status(404).send(error);
   }
 };
 
@@ -171,8 +127,4 @@ module.exports = {
   userProfile,
   updateUser,
   deleteUser,
-  uploadAvatar,
-  deleteAvatar,
-  upload,
-  getAvatar,
 };

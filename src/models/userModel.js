@@ -105,17 +105,6 @@ userSchema.statics.findByCredentials = async (email, password) => {
   return user;
 };
 
-//Hash the plain text password before saving
-userSchema.pre("save", async function (next) {
-  const user = this; //'this' is a document that is going to be save.
-
-  if (user.isModified("password")) {
-    user.password = await bcrypt.hash(user.password, 8);
-  }
-
-  next(); // it runs after function runs
-});
-
 userSchema.pre("remove", async function (next) {
   const user = this;
   await Car.deleteMany({

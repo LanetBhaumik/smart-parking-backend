@@ -7,10 +7,6 @@ const {
   userProfile,
   updateUser,
   deleteUser,
-  uploadAvatar,
-  deleteAvatar,
-  upload,
-  getAvatar,
 } = require("../controllers/userController");
 
 //get profile
@@ -48,22 +44,5 @@ router.patch("/users/me", auth, updateUser);
 
 //Delete loggedin user
 router.delete("/users/me", auth, deleteUser);
-
-//Upload avatar
-router.post(
-  "/users/me/avatar",
-  auth,
-  upload.single("avatar"),
-  uploadAvatar,
-  (error, req, res, next) => {
-    res.status(400).send({ error: error.message });
-  }
-);
-
-//delete avatar
-router.delete("/users/me/avatar", auth, deleteAvatar);
-
-//GET image (Avatar) by user id
-router.get("/users/:id/avatar", getAvatar);
 
 module.exports = router;

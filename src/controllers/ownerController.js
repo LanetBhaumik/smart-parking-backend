@@ -100,7 +100,6 @@ const updateOwner = async (req, res) => {
 const deleteOwner = async (req, res) => {
   try {
     await req.owner.remove();
-    // sendCancelationEmail(req.user.email, req.user.name);
     res.send(req.owner);
   } catch (error) {
     console.log(error);
@@ -110,56 +109,10 @@ const deleteOwner = async (req, res) => {
   }
 };
 
-const upload = multer({
-  fileFilter(req, file, cb) {
-    if (!file.originalname.match(/\.(jpg|jpef|png)$/)) {
-      return cb(new Error("Please upload an image"));
-    }
-    cb(undefined, true);
-  },
-  limits: {
-    fileSize: 1000000,
-  },
-});
-
-const uploadAvatar = async (req, res) => {
-  const buffer = await sharp(req.file.buffer)
-    .resize({ width: 250, height: 250 })
-    .png()
-    .toBuffer();
-  req.owner.avatar = buffer;
-  await req.owner.save();
-  res.send();
-};
-
-const deleteAvatar = async (req, res) => {
-  req.owner.avatar = undefined;
-  await req.owner.save();
-  res.send();
-};
-
-const getAvatar = async (req, res) => {
-  try {
-    const owner = await Owner.findById(req.params.id);
-    if (!owner || !owner.avatar) {
-      throw new Error();
-    }
-    res.set("Content-Type", "image/png");
-    res.send(owner.avatar);
-  } catch (error) {
-    console.log(error);
-    res.status(404).send(error);
-  }
-};
-
 module.exports = {
   createOwner,
   loginOwner,
   ownerProfile,
   updateOwner,
   deleteOwner,
-  uploadAvatar,
-  deleteAvatar,
-  upload,
-  getAvatar,
 };

@@ -90,17 +90,6 @@ ownerSchema.statics.findByCredentials = async (email, password) => {
   return owner;
 };
 
-//Hash the plain text password before saving
-ownerSchema.pre("save", async function (next) {
-  const owner = this; //'this' is a document that is going to be save.
-
-  if (owner.isModified("password")) {
-    owner.password = await bcrypt.hash(owner.password, 8);
-  }
-
-  next(); // it runs after function runs
-});
-
 //Delete parkings of owner when owner delete accout
 ownerSchema.pre("remove", async function (next) {
   const owner = this;
